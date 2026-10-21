@@ -36,9 +36,14 @@ class TarefaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Tarefa $tarefa)
+    public function show(string $id)
     {
-        //
+        try {
+            $tarefa = Tarefa::findOrFail($id);
+            return response()->json($tarefa, 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Tarefa não encontrada'], 404);
+        }
     }
 
     /**
@@ -52,16 +57,20 @@ class TarefaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tarefa $tarefa)
+    public function update(TarefaRequest $request, string $id)
     {
-        //
+        $tarefa = Tarefa::findOrFail($id); // Busca a tarefa pelo ID ou retorna um erro 404 se não encontrada
+        $tarefa->update($request->all()); // Atualiza a tarefa com os dados fornecidos na requisição
+        return response()->json($tarefa, 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tarefa $tarefa)
+    public function destroy(string $id)
     {
-        //
+        $tarefa = Tarefa::findOrFail($id);
+        $tarefa->delete();
+        return response()->json(null, 204);
     }
 }
