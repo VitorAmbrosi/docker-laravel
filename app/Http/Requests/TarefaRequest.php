@@ -22,6 +22,13 @@ class TarefaRequest extends FormRequest
      */
     public function rules(): array
     {
+        //se for uma requisação PATCH, validar apenas o campo concluida
+        if ($this->isMethod('patch')) {
+            return [
+                'concluida' => ['required', 'boolean'],
+            ];
+        }
+
         return [
             'titulo' => ['required', 'string', 'max:255'],
             'descricao' => ['required', 'min:1'],
